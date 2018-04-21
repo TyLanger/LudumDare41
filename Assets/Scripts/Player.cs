@@ -10,8 +10,8 @@ public class Player : MonoBehaviour {
 	float acceleration = 1;
 	float turnSpeed = 0.2f;
 
-	float maxTurnAngle = 45;
-	float drag = 0.1f;
+	//float maxTurnAngle = 45;
+	//float drag = 0.1f;
 
 	// 0 is forward
 	// + is to the right
@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 
 	public AnimationCurve turnCurve;
 
-	Rigidbody rbody;
+	//Rigidbody rbody;
 
 	//public GameObject frontLeftTire;
 	//public GameObject frontRightTire;
@@ -34,7 +34,7 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		rbody = GetComponent<Rigidbody> ();
+		//rbody = GetComponent<Rigidbody> ();
 	}
 	
 	// Update is called once per frame
