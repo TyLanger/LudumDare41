@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Mage : MonoBehaviour {
 
-	public enum AttackType {PulseRing, Spiral }
+	public enum AttackType {PulseRing, Spiral, None }
 
 	public AttackType attackType;
 
@@ -16,10 +16,16 @@ public class Mage : MonoBehaviour {
 	public GameObject projectile;
 
 	bool alive = true;
+	Rigidbody rb;
+	float force = 2;
+	float gravity = -0.02f;
+	Vector3 ForceDirection;
+	float moveSpeed = 3;
 
 	// Use this for initialization
 	void Start () {
-		
+		ForceDirection = Vector3.up;
+		rb = GetComponent<Rigidbody> ();	
 	}
 	
 	// Update is called once per frame
@@ -50,6 +56,9 @@ public class Mage : MonoBehaviour {
 				}
 
 			}
+		} else {
+			transform.position = Vector3.MoveTowards (transform.position, transform.position + ForceDirection, moveSpeed * Time.deltaTime);
+			ForceDirection += Vector3.up* gravity;
 		}
 	}
 
@@ -95,11 +104,29 @@ public class Mage : MonoBehaviour {
 		Destroy(this.gameObject);
 	}
 
-	public void CrashInto(Vector3 forceDirection)
+	public void CrashInto(Vector3 forceDirection, float crashSpeed)
 	{
-		// die and go off flying in forceDirection
-		alive = false;
-		// rework timing later
-		Invoke ("Death", 5);
+		if (alive) {
+			//GetComponent<Collider> ().isTrigger = false;
+			//rb.useGravity = true;
+			// die and go off flying in forceDirection
+			moveSpeed *= crashSpeed;
+			ForceDirection = forceDirection + Vector3.up * 0.1f;
+			alive = false;
+			//rb.AddForce (forceDirection * force * 10);
+			// rework timing later
+			Invoke ("Death", 5);
+		} 
+	}
+
+	void OnTriggerEnter(Collider col)
+	{
+		if (!alive) {
+			// after you die, you go flying
+			// if you collide with something else (the floor or a wall), explode
+			if (col.tag != "Projectile") {
+				Death ();
+			}
+		}
 	}
 }

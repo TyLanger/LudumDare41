@@ -5,9 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 	// Controls the driving of the car
 
-	float maxMoveSpeed = 10;
+	public float maxMoveSpeed = 10;
 	public float currentMoveSpeed = 0;
-	float acceleration = 1;
+	float acceleration = 0.5f;
 	float turnSpeed = 0.2f;
 
 	//float maxTurnAngle = 45;
@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 
 	public AnimationCurve turnCurve;
 
-	//Rigidbody rbody;
+	Rigidbody rbody;
 
 	//public GameObject frontLeftTire;
 	//public GameObject frontRightTire;
@@ -32,9 +32,12 @@ public class Player : MonoBehaviour {
 	float timeToResetSpeed = 1.0f;
 	float timeLastAccel = 0;
 
+	Vector3 oldForward;
+
 	// Use this for initialization
 	void Start () {
-		//rbody = GetComponent<Rigidbody> ();
+		rbody = GetComponent<Rigidbody> ();
+		oldForward = transform.forward;
 	}
 	
 	// Update is called once per frame
@@ -75,25 +78,16 @@ public class Player : MonoBehaviour {
 		currentMoveSpeed += Input.GetAxisRaw ("Vertical") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
 		currentMoveSpeed = Mathf.Clamp (currentMoveSpeed, -maxMoveSpeed, maxMoveSpeed);
 
-		// can't rotate like this
-		// then you can rotate in place while not moving
-		//transform.Rotate(new Vector3(0, turnSpeed * Input.GetAxisRaw("Horizontal"), 0));
-
-		//oldPos = transform.position;
-		//transform.position = Vector3.MoveTowards (transform.position, transform.position + frontLeftTire.transform.forward, currentMoveSpeed * Time.fixedDeltaTime);
 		// move forwards
-		transform.position = Vector3.MoveTowards (transform.position, transform.position + transform.forward, currentMoveSpeed * Time.fixedDeltaTime);
+		//transform.position = Vector3.MoveTowards (transform.position, transform.position + oldForward, currentMoveSpeed * Time.fixedDeltaTime);
 
-		// physics
-		//rbody.AddForce(transform.forward * currentMoveSpeed);
-		//rbody.velocity = transform.forward * Vector3.Dot (rbody.velocity, transform.forward);
+		// This makes the car quite slippery
+		transform.position = Vector3.MoveTowards (transform.position, transform.position + (transform.forward + oldForward * Mathf.Abs(currentMoveSpeed) *0.5f), currentMoveSpeed * Time.fixedDeltaTime);
+		oldForward = (transform.forward + oldForward * Mathf.Abs(currentMoveSpeed) * 0.5f).normalized;
 
-		//transform.rotation = Quaternion.FromToRotation (Vector3.forward, transform.position - oldPos);
-		//transform.rotation = Quaternion.FromToRotation (transform.forward, new Vector3 (Input.GetAxisRaw ("Horizontal"), 0, currentMoveSpeed));
-		//transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.FromToRotation(Vector3.forward, frontLeftTire.transform.forward), 1);
-		//transform.rotation = Quaternion.AngleAxis (maxTurnAngle * currentTurning * currentMoveSpeed, Vector3.up);
-		//transform.rotation = Quaternion.FromToRotation(transform.forward, transform.position - oldPos);
-		//transform.rotation = Quaternion.FromToRotation(transform.forward, ((transform.position + frontLeftTire.transform.forward) - rearAxle.position)*currentMoveSpeed);
+		// square currentMoveSpeed to make it very slippery
+		//transform.position = Vector3.MoveTowards (transform.position, transform.position + (transform.forward + oldForward * currentMoveSpeed*currentMoveSpeed *0.5f), currentMoveSpeed * Time.fixedDeltaTime);
+		//oldForward = (transform.forward + oldForward * currentMoveSpeed*currentMoveSpeed * 0.5f).normalized;
 
 		// rotate
 		// only when moving
@@ -126,7 +120,17 @@ public class Player : MonoBehaviour {
 
 		if (col.tag == "Enemy") {
 			// kill enemy
-			col.gameObject.GetComponent<Mage>().CrashInto(col.transform.position - transform.position);
+			col.gameObject.GetComponent<Mage>().CrashInto((col.transform.position - transform.position).normalized, currentMoveSpeed);
+		}
+	}
+
+	void OnCollisionEnter(Collision col)
+	{
+		if (col.transform.tag == "Wall") {
+			// add a force based on the perpendicular component of the player forward vector
+			// in the direction away from the wall
+			// that may work for glancing blows, but does it work for head on collisions?
+			rbody.AddForce (col.transform.position - transform.position);
 		}
 	}
 }
