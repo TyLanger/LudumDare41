@@ -105,6 +105,7 @@ public class Player : MonoBehaviour {
 
 	}
 
+	/*
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;
@@ -118,5 +119,14 @@ public class Player : MonoBehaviour {
 		Vector3 to = new Vector3 (1, 0, 0);
 		Gizmos.color = Color.green;
 		Gizmos.DrawLine (transform.position, transform.position + Quaternion.FromToRotation (from, to).eulerAngles);
+	}*/
+
+	void OnTriggerEnter(Collider col)
+	{
+
+		if (col.tag == "Enemy") {
+			// kill enemy
+			col.gameObject.GetComponent<Mage>().CrashInto(col.transform.position - transform.position);
+		}
 	}
 }
