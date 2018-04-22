@@ -24,15 +24,16 @@ public class Mage : MonoBehaviour {
 
 	bool awake = false;
 
+	ItemPool itemPool;
 
 	// Use this for initialization
 	void Start () {
 		ForceDirection = Vector3.up;
-		//rb = GetComponent<Rigidbody> ();	
+		//rb = GetComponent<Rigidbody> ();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		if (awake) {
 			if (alive) {
 				if (Time.time > timeOfNextAttack) {
@@ -61,7 +62,7 @@ public class Mage : MonoBehaviour {
 
 				}
 			} else {
-				transform.position = Vector3.MoveTowards (transform.position, transform.position + ForceDirection, moveSpeed * Time.deltaTime);
+				transform.position = Vector3.MoveTowards (transform.position, transform.position + ForceDirection, moveSpeed * Time.fixedDeltaTime);
 				ForceDirection += Vector3.up * gravity;
 			}
 		}
@@ -69,36 +70,44 @@ public class Mage : MonoBehaviour {
 
 	void FireProjectile(int direction)
 	{
-		
+		// Would an item 
 		switch (direction) {
 		case 0:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 0, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 0, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 0, 0)));
 			break;
 		case 1:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 45, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 45, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 45, 0)));
 			break;
 		case 2:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 90, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 90, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 90, 0)));
 			break;
 		case 3:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 135, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 135, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 135, 0)));
 			break;
 
 		case 4:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 180, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 180, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 180, 0)));
 			break;
 
 		case 5:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 225, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 225, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 225, 0)));
 
 			break;
 
 		case 6:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 270, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 270, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 270, 0)));
 			break;
 
 		case 7:
-			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 315, 0)));
+			itemPool.SpawnProjectile(transform.position, Quaternion.Euler (new Vector3 (0, 315, 0)));
+			//Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 315, 0)));
 			break;
 
 		}
@@ -109,6 +118,11 @@ public class Mage : MonoBehaviour {
 		// despawn yourself
 		// called after it has been crashed into
 		Destroy(this.gameObject);
+	}
+
+	public void SetItemPool(ItemPool pool)
+	{
+		itemPool = pool;
 	}
 
 	public void WakeUp(bool wake)
@@ -127,7 +141,7 @@ public class Mage : MonoBehaviour {
 			alive = false;
 			//rb.AddForce (forceDirection * force * 10);
 			// rework timing later
-			Invoke ("Death", 5);
+			Invoke ("Death", 3);
 		} 
 	}
 
@@ -136,7 +150,7 @@ public class Mage : MonoBehaviour {
 		if (!alive) {
 			// after you die, you go flying
 			// if you collide with something else (the floor or a wall), explode
-			if (col.tag != "Projectile") {
+			if (col.tag != "Projectile" && col.tag != "Enemy") {
 				Death ();
 			}
 		}

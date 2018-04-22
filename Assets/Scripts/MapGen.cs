@@ -24,6 +24,8 @@ public class MapGen : MonoBehaviour {
 	// 2 is pulse mage
 	public GameObject[] enemies;
 
+	public ItemPool itemPool;
+
 	int hallLength = 24;
 	int hallWidth = 12;
 
@@ -126,7 +128,7 @@ public class MapGen : MonoBehaviour {
 		army.position = center;
 		GameObject enemyCopy;
 		// randomly choose something to spawn
-		int r = Random.Range(0, 3);
+		int r = Random.Range(0, 2);
 		switch(r)
 		{
 		case 0:
@@ -136,6 +138,7 @@ public class MapGen : MonoBehaviour {
 					// 16 skeletons
 					// don't use tileScaling on the skeletons, they are better bunched up
 					enemyCopy = Instantiate (enemies [0], army.position + new Vector3 ((x - 1.5f), 1.3f, (y - 1.5f)), army.rotation);
+					enemyCopy.GetComponent<Mage> ().SetItemPool (itemPool);
 					enemyCopy.transform.parent = army;
 				}
 			}
@@ -154,22 +157,30 @@ public class MapGen : MonoBehaviour {
 			*/
 			// spiral wizards
 			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (1 * tileSpacing, 1.3f, 3 * tileSpacing), army.rotation);
+			enemyCopy.GetComponent<Mage> ().SetItemPool (itemPool);
 			enemyCopy.transform.parent = army;
 			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (-1 * tileSpacing, 1.3f, -3 * tileSpacing), army.rotation);
+			enemyCopy.GetComponent<Mage> ().SetItemPool (itemPool);
 			enemyCopy.transform.parent = army;
 			break;
 
 		case 2:
 			// pulse wizards
+			// They're meh. Harder to dodge pulses
+			// pulses cause frame drop
+			/*
 			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (2 * tileSpacing, 1.3f, 3.5f * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
 			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (-2 * tileSpacing, 1.3f, -3.5f * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
+			*/
 			break;
 		case 3:
 			// this doesn't exist yet
+			/*
 			enemyCopy = Instantiate (enemies [3], army.position + new Vector3 (0 * tileSpacing, 1.3f, 0 * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
+			*/
 			break;
 		}
 		// rotate the enemies

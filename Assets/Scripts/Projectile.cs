@@ -8,19 +8,41 @@ public class Projectile : MonoBehaviour {
 
 	public float timeAlive = 7;
 
+	bool active = false;
+
+	ItemPool itemPool;
+
 	// Use this for initialization
 	void Start () {
-		Invoke ("DestroyProjectile", timeAlive);
+		//Invoke ("DestroyProjectile", timeAlive);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		transform.position = Vector3.MoveTowards (transform.position, transform.position + transform.forward, moveSpeed * Time.deltaTime);
+		if (active) {
+			transform.position = Vector3.MoveTowards (transform.position, transform.position + transform.forward, moveSpeed * Time.deltaTime);
+		}
+	}
+
+	public void Initialize(ItemPool pool)
+	{
+		itemPool = pool;
+	}
+
+	public void Activate()
+	{
+		
+		active = true;
+		Invoke ("DestroyProjectile", timeAlive);
 	}
 
 	void DestroyProjectile()
 	{
-		Destroy (this.gameObject);
+		CancelInvoke ();
+		active = false;
+		// give back to the pool
+		//Destroy (this.gameObject);
+		itemPool.Reclaim(this.gameObject);
 	}
 
 	void OnTriggerEnter(Collider col)
