@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
 
 	public float maxMoveSpeed = 10;
 	public float currentMoveSpeed = 0;
-	float acceleration = 0.5f;
+	float acceleration = 0.1f;
 	float turnSpeed = 0.2f;
 
 	//float maxTurnAngle = 45;
@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
 	float timeToResetSteering = 1.5f;
 	float timeLastSteered = 0;
 
-	float timeToResetSpeed = 1.0f;
+	float timeToResetSpeed = 3.0f;
 	float timeLastAccel = 0;
 
 	Vector3 oldForward;
@@ -39,10 +39,13 @@ public class Player : MonoBehaviour {
 	float penaltyTime = 0;
 	float hitPenalty = 1;
 
+	public float trigger;
+
 	// Use this for initialization
 	void Start () {
 		//rbody = GetComponent<Rigidbody> ();
 		oldForward = transform.forward;
+
 	}
 	
 	// Update is called once per frame
@@ -69,7 +72,7 @@ public class Player : MonoBehaviour {
 
 
 
-		if (Input.GetAxisRaw ("Vertical") == 0) {
+		if (Input.GetAxisRaw ("Acceleration") == 0) {
 			// not accelerating
 			// shouldn't be lerp
 			// should be based on how high it is
@@ -78,9 +81,14 @@ public class Player : MonoBehaviour {
 		} else {
 			timeLastAccel = Time.time;
 		}
-		// increase or decrease current moveSpeed
 
-		currentMoveSpeed += Input.GetAxisRaw ("Vertical") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
+		// increase or decrease current moveSpeed
+		// slow down
+		// -1 * 0.1 * 15-15 = 0
+		//currentMoveSpeed += Input.GetAxisRaw ("Vertical") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
+		currentMoveSpeed += Input.GetAxisRaw("Acceleration") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
+		currentMoveSpeed -= Input.GetAxisRaw("Brake") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
+
 		currentMoveSpeed = Mathf.Clamp (currentMoveSpeed, -maxMoveSpeed, maxMoveSpeed);
 
 		// move forwards

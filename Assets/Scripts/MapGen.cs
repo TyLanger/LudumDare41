@@ -35,10 +35,14 @@ public class MapGen : MonoBehaviour {
 	//public TrackPiece[] LeftRight;
 	//Vector3 lastExit;
 
+	public bool useRandomSeed = false;
 	public int seed = 0;
 
 	// Use this for initialization
 	void Start () {
+		if (useRandomSeed) {
+			seed = Random.Range (0, 1000);
+		}
 		Random.InitState (seed);
 
 		lastTilePos = transform.position;
