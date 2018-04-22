@@ -24,11 +24,11 @@ public class MapGen : MonoBehaviour {
 	// 2 is pulse mage
 	public GameObject[] enemies;
 
-	int hallLength = 20;
-	int hallWidth = 10;
+	int hallLength = 24;
+	int hallWidth = 12;
 
-	int roomLength = 20;
-	int roomWidth = 20;
+	int roomLength = 24;
+	int roomWidth = 24;
 
 	string debugString = "";
 

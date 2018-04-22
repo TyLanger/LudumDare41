@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
 	// Controls the driving of the car
@@ -39,6 +40,7 @@ public class Player : MonoBehaviour {
 	float endTime = 0;
 	float penaltyTime = 0;
 	float hitPenalty = 1;
+	int enemiesCrushed = 0;
 
 	bool playerControl = true;
 	float accelInput = 0;
@@ -59,6 +61,11 @@ public class Player : MonoBehaviour {
 			accelInput = Input.GetAxisRaw ("Acceleration");
 			brakeInput = Input.GetAxisRaw ("Brake");
 			horInput = Input.GetAxisRaw ("Horizontal");
+		} else {
+			if (Input.GetButtonDown ("Fire1")) {
+				// reset
+				SceneManager.LoadSceneAsync(0);
+			}
 		}
 
 
@@ -147,7 +154,8 @@ public class Player : MonoBehaviour {
 
 		Debug.Log ("Time: " + (endTime - startTime));
 		Debug.Log ("Penalty time: " + penaltyTime);
-		Debug.Log ("Total time: " + ((endTime-startTime)+penaltyTime));
+		Debug.Log ("But you crushed " + enemiesCrushed + " enemies!");
+		Debug.Log ("Total time: " + ((endTime-startTime)+penaltyTime-enemiesCrushed));
 
 	}
 
@@ -178,6 +186,7 @@ public class Player : MonoBehaviour {
 			col.gameObject.GetComponent<Mage>().CrashInto((col.transform.position - transform.position).normalized, currentMoveSpeed);
 			// add screen shake
 			cameraFollow.AddScreenShake();
+			enemiesCrushed++;
 		}
 	}
 

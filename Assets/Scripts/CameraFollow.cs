@@ -7,7 +7,7 @@ public class CameraFollow : MonoBehaviour {
 	public Transform player;
 	public Vector3 offset;
 
-
+	// Screen shake from https://www.youtube.com/watch?v=tu-Qe66AvtY
 	public float trauma = 0;
 	public float traumaLoss = 0.1f;
 	public float maxShake = 0.4f;
