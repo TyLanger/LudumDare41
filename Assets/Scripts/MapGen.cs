@@ -126,7 +126,7 @@ public class MapGen : MonoBehaviour {
 		army.position = center;
 		GameObject enemyCopy;
 		// randomly choose something to spawn
-		int r = Random.Range(0, 2);
+		int r = Random.Range(0, 3);
 		switch(r)
 		{
 		case 0:
@@ -152,6 +152,7 @@ public class MapGen : MonoBehaviour {
 				}
 			}
 			*/
+			// spiral wizards
 			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (1 * tileSpacing, 1.3f, 3 * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
 			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (-1 * tileSpacing, 1.3f, -3 * tileSpacing), army.rotation);
@@ -159,9 +160,15 @@ public class MapGen : MonoBehaviour {
 			break;
 
 		case 2:
+			// pulse wizards
 			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (2 * tileSpacing, 1.3f, 3.5f * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
 			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (-2 * tileSpacing, 1.3f, -3.5f * tileSpacing), army.rotation);
+			enemyCopy.transform.parent = army;
+			break;
+		case 3:
+			// this doesn't exist yet
+			enemyCopy = Instantiate (enemies [3], army.position + new Vector3 (0 * tileSpacing, 1.3f, 0 * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
 			break;
 		}
