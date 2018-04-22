@@ -34,6 +34,9 @@ public class Player : MonoBehaviour {
 
 	Vector3 oldForward;
 
+	float startTime = 0;
+	float endTime = 0;
+
 	// Use this for initialization
 	void Start () {
 		rbody = GetComponent<Rigidbody> ();
@@ -98,6 +101,21 @@ public class Player : MonoBehaviour {
 		}
 
 
+	}
+
+	public void StartRace()
+	{
+		// the start line calls this when the player crosses the start line
+		startTime = Time.time;
+		// start a coroutine to have a timer counting
+	}
+
+	public void EndRace()
+	{
+		// the end line calls this when the player touches the end line
+		endTime = Time.time;
+
+		Debug.Log ("Time: " + (endTime - startTime));
 	}
 
 	/*
