@@ -33,7 +33,8 @@ public class Projectile : MonoBehaviour {
 			// hit player, do damage
 			// hit anything (except caster), die
 			if (col.tag == "Player") {
-				Debug.Log ("Player hit");
+				//Debug.Log ("Player hit");
+				col.GetComponent<Player> ().HitByProjectile ();
 			}
 			DestroyProjectile ();
 		}

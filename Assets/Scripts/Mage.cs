@@ -16,8 +16,8 @@ public class Mage : MonoBehaviour {
 	public GameObject projectile;
 
 	bool alive = true;
-	Rigidbody rb;
-	float force = 2;
+	//Rigidbody rb;
+	//float force = 2;
 	float gravity = -0.02f;
 	Vector3 ForceDirection;
 	float moveSpeed = 3;
@@ -25,7 +25,7 @@ public class Mage : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		ForceDirection = Vector3.up;
-		rb = GetComponent<Rigidbody> ();	
+		//rb = GetComponent<Rigidbody> ();	
 	}
 	
 	// Update is called once per frame

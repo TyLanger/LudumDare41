@@ -35,8 +35,12 @@ public class MapGen : MonoBehaviour {
 	//public TrackPiece[] LeftRight;
 	//Vector3 lastExit;
 
+	public int seed = 0;
+
 	// Use this for initialization
 	void Start () {
+		Random.InitState (seed);
+
 		lastTilePos = transform.position;
 		BuildMap ();
 		//lastExit = transform.position;
@@ -71,6 +75,7 @@ public class MapGen : MonoBehaviour {
 		}
 		BuildEndPiece (currentPiece.Exit);
 		Debug.Log (debugString);
+		//transform.localScale *= 2;
 	}
 
 	MapPiece BuildPiece(DoorDirection entrance)
@@ -123,7 +128,8 @@ public class MapGen : MonoBehaviour {
 			for (int x = 0; x < 4; x++) {
 				for (int y = 0; y < 4; y++) {
 					// 16 skeletons
-					enemyCopy = Instantiate (enemies [0], army.position + new Vector3 (x - 1.5f, 1.3f, y - 1.5f), army.rotation);
+					// don't use tileScaling on the skeletons, they are better bunched up
+					enemyCopy = Instantiate (enemies [0], army.position + new Vector3 ((x - 1.5f), 1.3f, (y - 1.5f)), army.rotation);
 					enemyCopy.transform.parent = army;
 				}
 			}
@@ -140,25 +146,31 @@ public class MapGen : MonoBehaviour {
 				}
 			}
 			*/
-			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (1, 1.3f, 3), army.rotation);
+			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (1 * tileSpacing, 1.3f, 3 * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
-			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (-1, 1.3f, -3), army.rotation);
+			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (-1 * tileSpacing, 1.3f, -3 * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
 			break;
 		}
+		// rotate the enemies
 		switch(entrance)
 		{
 		case DoorDirection.Bottom:
 			//army.RotateAround (army.position, Vector3.up, 180);
-			army.rotation = Quaternion.FromToRotation (Vector3.forward, army.position - ((bottomLeft + bottomRight) * 0.5f));
+			//- ((bottomLeft + bottomRight) * 0.5f
+			army.rotation = Quaternion.FromToRotation (Vector3.forward, army.position - new Vector3(bottomLeft.x + bottomRight.x, 0, bottomLeft.z + bottomLeft.z)*0.5f);
 			break;
 		case DoorDirection.Left:
 			//army.RotateAround (army.position, Vector3.up, -90);
-			army.rotation = Quaternion.FromToRotation (Vector3.forward, army.position - ((topLeft + bottomLeft) * 0.5f));
+			//- ((topLeft + bottomLeft) * 0.5f
+			army.rotation = Quaternion.FromToRotation (Vector3.forward, army.position - new Vector3(topLeft.x + bottomLeft.x, 0, topLeft.z + bottomLeft.z)*0.5f );
 			break;
 		case DoorDirection.Top:
 			//army.RotateAround (army.position, Vector3.up, 0);
-			army.rotation = Quaternion.FromToRotation (Vector3.forward, army.position - ((topLeft + topRight) * 0.5f));
+			// - ((topLeft + topRight) * 0.5f))
+			// on the straight halways, the enemies will spawn underneath because both parts of FromToRotation are ~ (0,0,1)
+			// adding 0.1f is a work around
+			army.rotation = Quaternion.FromToRotation (Vector3.forward, (army.position - new Vector3(topLeft.x + topRight.x + 0.1f, 0, topLeft.z + topLeft.z)*0.5f));
 			break;
 		}
 		army.parent = transform;
@@ -188,7 +200,7 @@ public class MapGen : MonoBehaviour {
 		// set the lastTilePos to the bottom right tile
 		lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
 
-		var start = Instantiate (startLine, lastTilePos + new Vector3 (0, 0, ((hallWidth -1)* 0.5f)), transform.rotation);
+		var start = Instantiate (startLine, lastTilePos + new Vector3 (0, 0, ((hallWidth -1)* 0.5f) * tileSpacing), transform.rotation);
 		start.transform.parent = transform;
 
 		return thisPiece;
@@ -206,7 +218,7 @@ public class MapGen : MonoBehaviour {
 
 			// hallway straight down
 			lastTilePos = lastTilePos + new Vector3 (0, 0, -tileSpacing);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f), 0, 0), Quaternion.AngleAxis(-90, Vector3.up));
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, 0, 0), Quaternion.AngleAxis(-90, Vector3.up));
 			end.transform.parent = transform;
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < hallLength; y++) {
@@ -228,7 +240,7 @@ public class MapGen : MonoBehaviour {
 
 			// entrance is to the left
 			lastTilePos = lastTilePos + new Vector3 (tileSpacing, 0, 0);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (0, 0, ((hallWidth -1)* 0.5f)), transform.rotation);
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (0, 0, ((hallWidth -1)* 0.5f) * tileSpacing), transform.rotation);
 			end.transform.parent = transform;
 			for (int x = 0; x < hallLength; x++) {
 				for (int y = 0; y < hallWidth; y++) {
@@ -251,7 +263,7 @@ public class MapGen : MonoBehaviour {
 
 			// hallway straight up
 			lastTilePos = lastTilePos + new Vector3 (0, 0, tileSpacing);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f), 0, 0), Quaternion.AngleAxis(90, Vector3.up));
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, 0, 0), Quaternion.AngleAxis(90, Vector3.up));
 			end.transform.parent = transform;
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < hallLength; y++) {
@@ -374,6 +386,9 @@ public class MapGen : MonoBehaviour {
 
 			lastTilePos = lastTilePos + new Vector3 (0, 0, -tileSpacing);
 
+			//corners [0] = lastTilePos;
+			//corners [1] = lastTilePos + new Vector3 ((hallWidth - 1) * tileSpacing, 0, 0);
+
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < x + 1; y++) {
 					// the (x == (hallWidth - 1) && y == 0) adds a wall in the inside of the corner
@@ -387,6 +402,10 @@ public class MapGen : MonoBehaviour {
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, 0);
+			// do last 2 corners afer lastTilePos is changed
+			//corners [2] = lastTilePos;
+			//corners [3] = lastTilePos + new Vector3 ((hallWidth - 1) * tileSpacing, 0, 0);
+			//SpawnEnemies (corners, DoorDirection.Top);
 			break;
 		case 1:
 			debugString += "TopEntrance case 1 ";

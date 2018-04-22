@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 
 	public AnimationCurve turnCurve;
 
-	Rigidbody rbody;
+	//Rigidbody rbody;
 
 	//public GameObject frontLeftTire;
 	//public GameObject frontRightTire;
@@ -36,10 +36,12 @@ public class Player : MonoBehaviour {
 
 	float startTime = 0;
 	float endTime = 0;
+	float penaltyTime = 0;
+	float hitPenalty = 1;
 
 	// Use this for initialization
 	void Start () {
-		rbody = GetComponent<Rigidbody> ();
+		//rbody = GetComponent<Rigidbody> ();
 		oldForward = transform.forward;
 	}
 	
@@ -116,6 +118,16 @@ public class Player : MonoBehaviour {
 		endTime = Time.time;
 
 		Debug.Log ("Time: " + (endTime - startTime));
+		Debug.Log ("Penalty time: " + penaltyTime);
+		Debug.Log ("Total time: " + ((endTime-startTime)+penaltyTime));
+
+	}
+
+	public void HitByProjectile()
+	{
+		// lose hp?
+		// time penalty?
+		penaltyTime += hitPenalty;
 	}
 
 	/*
