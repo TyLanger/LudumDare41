@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 	public float maxTurning = 2;
 
 	public AnimationCurve turnCurve;
-
+	CameraFollow cameraFollow;
 	//Rigidbody rbody;
 
 	//public GameObject frontLeftTire;
@@ -49,6 +49,7 @@ public class Player : MonoBehaviour {
 	void Start () {
 		//rbody = GetComponent<Rigidbody> ();
 		oldForward = transform.forward;
+		cameraFollow = FindObjectOfType<CameraFollow> ();
 
 	}
 	
@@ -58,6 +59,12 @@ public class Player : MonoBehaviour {
 			accelInput = Input.GetAxisRaw ("Acceleration");
 			brakeInput = Input.GetAxisRaw ("Brake");
 			horInput = Input.GetAxisRaw ("Horizontal");
+		}
+
+
+		if (Input.GetButton ("Jump")) {
+			// add some trauma to camera
+			cameraFollow.AddScreenShake();
 		}
 
 		// turning
@@ -169,6 +176,8 @@ public class Player : MonoBehaviour {
 		if (col.tag == "Enemy") {
 			// kill enemy
 			col.gameObject.GetComponent<Mage>().CrashInto((col.transform.position - transform.position).normalized, currentMoveSpeed);
+			// add screen shake
+			cameraFollow.AddScreenShake();
 		}
 	}
 

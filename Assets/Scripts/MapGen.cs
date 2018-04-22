@@ -155,6 +155,13 @@ public class MapGen : MonoBehaviour {
 			enemyCopy = Instantiate (enemies [1], army.position + new Vector3 (-1 * tileSpacing, 1.3f, -3 * tileSpacing), army.rotation);
 			enemyCopy.transform.parent = army;
 			break;
+
+		case 2:
+			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (2 * tileSpacing, 1.3f, 3.5f * tileSpacing), army.rotation);
+			enemyCopy.transform.parent = army;
+			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (-2 * tileSpacing, 1.3f, -3.5f * tileSpacing), army.rotation);
+			enemyCopy.transform.parent = army;
+			break;
 		}
 		// rotate the enemies
 		switch(entrance)
@@ -380,6 +387,7 @@ public class MapGen : MonoBehaviour {
 		MapPiece thisPiece = new MapPiece (DoorDirection.Top, DoorDirection.Right);
 		GameObject tileCopy = wallPieces [0];
 		Vector3[] corners = new Vector3[4];
+		Vector3[] roomCorners = new Vector3[9];
 
 		switch (r) {
 		case 0:
@@ -480,6 +488,8 @@ public class MapGen : MonoBehaviour {
 
 			// room with entrance top, exit bottom right
 			lastTilePos = lastTilePos + new Vector3 (0, 0, -tileSpacing);
+			// lastTilePos is in the top left corner
+			roomCorners[0] = lastTilePos;
 
 			for (int x = 0; x < roomWidth; x++) {
 				for (int y = 0; y < roomLength; y++) {
@@ -497,6 +507,23 @@ public class MapGen : MonoBehaviour {
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, 0);
+			// lastTile Pos is the bottom right corner
+
+			//roomCorners [0] = roomCorners [8] + new Vector3 (-(roomLength - 1) * tileSpacing, 0, (roomWidth - 1) * tileSpacing);
+			roomCorners [1] = roomCorners [0] + new Vector3 ((roomLength - 1) * tileSpacing * 0.5f, 0, 0);
+			roomCorners [2] = roomCorners [0] + new Vector3 ((roomLength - 1) * tileSpacing, 0, 0);
+			roomCorners [3] = roomCorners [0] + new Vector3 (0, 0, -(roomWidth-1)*tileSpacing*0.5f);
+			roomCorners [4] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing*0.5f);
+			roomCorners [5] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing, 0, -(roomWidth-1)*tileSpacing*0.5f);
+			roomCorners [6] = roomCorners [0] + new Vector3 (0, 0, -(roomWidth-1)*tileSpacing);
+			roomCorners [7] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing);
+			roomCorners [8] = lastTilePos;
+
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Top);
+			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
+			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
+			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
+
 			break;
 		}
 
@@ -510,6 +537,7 @@ public class MapGen : MonoBehaviour {
 		GameObject tileCopy = wallPieces [0];
 		//GameObject enemyCopy = enemies [0];
 		Vector3[] corners = new Vector3[4];
+		Vector3[] roomCorners = new Vector3[9];
 
 		switch (r) {
 		case 0:
@@ -625,14 +653,18 @@ public class MapGen : MonoBehaviour {
 			// build a room
 			// entrance on Left
 			// exit on right
-			thisPiece = new MapPiece(DoorDirection.Left, DoorDirection.Right);
-			lastTilePos = lastTilePos + new Vector3(tileSpacing, 0, 0);
+			thisPiece = new MapPiece (DoorDirection.Left, DoorDirection.Right);
+			lastTilePos = lastTilePos + new Vector3 (tileSpacing, 0, 0);
+
+			// lastTilePos is bottom right corner
+			roomCorners [6] = lastTilePos;
+
 
 			// entrance in bottom left
 			// exit in top right
 			for (int x = 0; x < roomLength; x++) {
 				for (int y = 0; y < roomWidth; y++) {
-					if (y == 0 || y == (roomWidth - 1) || (x == 0 && y >= hallWidth) || (x == (roomLength-1) && y <= (roomWidth-hallWidth))) {
+					if (y == 0 || y == (roomWidth - 1) || (x == 0 && y >= hallWidth) || (x == (roomLength - 1) && y <= (roomWidth - hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y) * tileSpacing), transform.rotation);
 					} else {
 						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
@@ -641,21 +673,43 @@ public class MapGen : MonoBehaviour {
 					tileCopy.transform.parent = transform;
 				}
 			}
+			// lastTilePos is now in the top right corner
+			roomCorners [2] = tileCopy.transform.position + new Vector3 (0, -0.5f, 0);
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
+
+			roomCorners [0] = roomCorners [6] + new Vector3 (0, 0, (roomWidth - 1) * tileSpacing);
+			roomCorners [1] = roomCorners [0] + new Vector3 ((roomLength - 1) * tileSpacing * 0.5f, 0);
+			//roomCorners [2] = 2;
+			roomCorners [3] = roomCorners [0] + new Vector3 (0, 0, -(roomWidth - 1) * tileSpacing * 0.5f);
+			roomCorners [4] = roomCorners [3] + new Vector3 ((roomLength - 1) * tileSpacing * 0.5f, 0, 0);
+			roomCorners [5] = roomCorners [2] + new Vector3 (0, 0, -(roomWidth - 1) * tileSpacing * 0.5f);
+			//roomCorners [6] = 2;
+			roomCorners [7] = roomCorners [6] + new Vector3 ((roomLength - 1) * tileSpacing * 0.5f, 0, 0);
+			roomCorners [8] = roomCorners [6] + new Vector3 ((roomLength - 1) * tileSpacing, 0, 0);
+			/*
+			for (int i = 0; i < 9; i++) {
+				Debug.Log (roomCorners[i]);
+			}*/
+			// 4 spawns in the rooms
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Bottom);
+			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Left);
+			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Bottom);
+			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
+
 			break;
 		case 4:
 			debugString += "LeftEntrance case 4 ";
 			// build a room
 			// entrance on Left
 			// exit on right
-			thisPiece = new MapPiece(DoorDirection.Left, DoorDirection.Right);
-			lastTilePos = lastTilePos + new Vector3(tileSpacing, 0, -(roomWidth-hallWidth) * tileSpacing);
+			thisPiece = new MapPiece (DoorDirection.Left, DoorDirection.Right);
+			lastTilePos = lastTilePos + new Vector3 (tileSpacing, 0, -(roomWidth - hallWidth) * tileSpacing);
 
 			// entrance in top left
 			// exit in bottom right
 			for (int x = 0; x < roomLength; x++) {
 				for (int y = 0; y < roomWidth; y++) {
-					if (y == 0 || y == (roomWidth - 1) || (x == (roomLength-1) && y >= hallWidth) || (x == 0 && y <= (roomWidth-hallWidth))) {
+					if (y == 0 || y == (roomWidth - 1) || (x == (roomLength - 1) && y >= hallWidth) || (x == 0 && y <= (roomWidth - hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y) * tileSpacing), transform.rotation);
 					} else {
 						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
@@ -664,7 +718,25 @@ public class MapGen : MonoBehaviour {
 					tileCopy.transform.parent = transform;
 				}
 			}
-			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(roomWidth-1) * tileSpacing);
+			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(roomWidth - 1) * tileSpacing);
+			// lastTilePos is the bottom right corner
+			// get it into terms of the top left corner
+			// might make it easier to copy-paste
+			roomCorners [8] = lastTilePos;
+			roomCorners [0] = roomCorners [8] + new Vector3 (-(roomLength - 1) * tileSpacing, 0, (roomWidth - 1) * tileSpacing);
+			roomCorners [1] = roomCorners [0] + new Vector3 ((roomLength - 1) * tileSpacing * 0.5f, 0, 0);
+			roomCorners [2] = roomCorners [0] + new Vector3 ((roomLength - 1) * tileSpacing, 0, 0);
+			roomCorners [3] = roomCorners [0] + new Vector3 (0, 0, -(roomWidth-1)*tileSpacing*0.5f);
+			roomCorners [4] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing*0.5f);
+			roomCorners [5] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing, 0, -(roomWidth-1)*tileSpacing*0.5f);
+			roomCorners [6] = roomCorners [0] + new Vector3 (0, 0, -(roomWidth-1)*tileSpacing);
+			roomCorners [7] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing);
+
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Left);
+			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
+			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
+			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Top);
+
 			break;
 		case 5:
 			debugString += "LeftEntrance case 5 ";
