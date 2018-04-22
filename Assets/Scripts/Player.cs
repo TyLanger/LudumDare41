@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
 	public float maxMoveSpeed = 10;
 	public float currentMoveSpeed = 0;
 	float acceleration = 0.1f;
+	float deceleration = 0.05f;
 	float turnSpeed = 0.2f;
 
 	//float maxTurnAngle = 45;
@@ -39,7 +40,10 @@ public class Player : MonoBehaviour {
 	float penaltyTime = 0;
 	float hitPenalty = 1;
 
-	public float trigger;
+	bool playerControl = true;
+	float accelInput = 0;
+	float brakeInput = 0;
+	float horInput = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -50,10 +54,14 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-
+		if (playerControl) {
+			accelInput = Input.GetAxisRaw ("Acceleration");
+			brakeInput = Input.GetAxisRaw ("Brake");
+			horInput = Input.GetAxisRaw ("Horizontal");
+		}
 
 		// turning
-		if (Input.GetAxisRaw ("Horizontal") == 0) {
+		if (horInput == 0) {
 			// not turning
 			currentTurning = Mathf.Lerp (currentTurning, 0, Mathf.Clamp01((Time.time - timeLastSteered) / timeToResetSteering));
 		} else {
@@ -61,7 +69,7 @@ public class Player : MonoBehaviour {
 		}
 
 
-		currentTurning += Input.GetAxisRaw ("Horizontal") * turnSpeed * (maxTurning - Mathf.Abs(currentTurning));
+		currentTurning += horInput * turnSpeed * (maxTurning - Mathf.Abs(currentTurning));
 		currentTurning = Mathf.Clamp (currentTurning, -maxTurning, maxTurning);
 
 		//frontLeftTire.transform.localRotation = Quaternion.AngleAxis (maxTurnAngle * currentTurning, Vector3.up);
@@ -72,7 +80,7 @@ public class Player : MonoBehaviour {
 
 
 
-		if (Input.GetAxisRaw ("Acceleration") == 0) {
+		if (accelInput == 0) {
 			// not accelerating
 			// shouldn't be lerp
 			// should be based on how high it is
@@ -86,10 +94,10 @@ public class Player : MonoBehaviour {
 		// slow down
 		// -1 * 0.1 * 15-15 = 0
 		//currentMoveSpeed += Input.GetAxisRaw ("Vertical") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
-		currentMoveSpeed += Input.GetAxisRaw("Acceleration") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
-		currentMoveSpeed -= Input.GetAxisRaw("Brake") * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
+		currentMoveSpeed += accelInput * acceleration * (maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
+		currentMoveSpeed -= brakeInput * deceleration * (0.5f*maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
 
-		currentMoveSpeed = Mathf.Clamp (currentMoveSpeed, -maxMoveSpeed, maxMoveSpeed);
+		currentMoveSpeed = Mathf.Clamp (currentMoveSpeed, -maxMoveSpeed*0.5f, maxMoveSpeed);
 
 		// move forwards
 		//transform.position = Vector3.MoveTowards (transform.position, transform.position + oldForward, currentMoveSpeed * Time.fixedDeltaTime);
@@ -122,6 +130,11 @@ public class Player : MonoBehaviour {
 
 	public void EndRace()
 	{
+		playerControl = false;
+		accelInput = 0;
+		brakeInput = 0;
+		horInput = 0;
+		//oldForward = Vector3.up * -0.5f;
 		// the end line calls this when the player touches the end line
 		endTime = Time.time;
 
@@ -138,21 +151,17 @@ public class Player : MonoBehaviour {
 		penaltyTime += hitPenalty;
 	}
 
-	/*
+
 	void OnDrawGizmos()
 	{
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(transform.position + Vector3.up, Vector3.up + transform.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
+		Gizmos.color = Color.blue;
+		Gizmos.DrawLine (transform.position, transform.position + oldForward);
 
 		//Gizmos.color = Color.blue;
 		//Gizmos.DrawLine (frontLeftTire.transform.position, frontLeftTire.transform.position + frontLeftTire.transform.forward);
 
 
-		Vector3 from = new Vector3 (1, 0, 0);
-		Vector3 to = new Vector3 (1, 0, 0);
-		Gizmos.color = Color.green;
-		Gizmos.DrawLine (transform.position, transform.position + Quaternion.FromToRotation (from, to).eulerAngles);
-	}*/
+	}
 
 	void OnTriggerEnter(Collider col)
 	{
