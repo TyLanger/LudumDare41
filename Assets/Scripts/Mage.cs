@@ -111,7 +111,7 @@ public class Mage : MonoBehaviour {
 			//rb.useGravity = true;
 			// die and go off flying in forceDirection
 			moveSpeed *= crashSpeed;
-			ForceDirection = forceDirection + Vector3.up * 0.1f;
+			ForceDirection = forceDirection + Vector3.up * 0.2f;
 			alive = false;
 			//rb.AddForce (forceDirection * force * 10);
 			// rework timing later

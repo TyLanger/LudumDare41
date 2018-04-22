@@ -92,7 +92,8 @@ public class Player : MonoBehaviour {
 		// rotate
 		// only when moving
 		if (Mathf.Abs(currentMoveSpeed) > 0.4f) {
-			transform.Rotate (Vector3.up, currentTurning);
+			// multiply by the sign of moveSpeed so reverse reverses the turning
+			transform.Rotate (Vector3.up, currentTurning * Mathf.Sign(currentMoveSpeed));
 			//rbody.AddTorque (transform.up * currentTurning * 0.2f);
 		}
 
@@ -124,13 +125,16 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	/*
 	void OnCollisionEnter(Collision col)
 	{
 		if (col.transform.tag == "Wall") {
 			// add a force based on the perpendicular component of the player forward vector
 			// in the direction away from the wall
 			// that may work for glancing blows, but does it work for head on collisions?
-			rbody.AddForce (col.transform.position - transform.position);
+			Debug.Log("Hit a wall");
+			//rbody.AddForce ((col.transform.position - transform.position) * 15);
 		}
 	}
+	*/
 }
