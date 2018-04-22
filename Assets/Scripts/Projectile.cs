@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour {
 
 	public float moveSpeed = 1;
 
-	public float timeAlive = 10;
+	public float timeAlive = 7;
 
 	// Use this for initialization
 	void Start () {
@@ -14,8 +14,8 @@ public class Projectile : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void FixedUpdate () {
-		transform.position = Vector3.MoveTowards (transform.position, transform.position + transform.forward, moveSpeed * Time.fixedDeltaTime);
+	void Update () {
+		transform.position = Vector3.MoveTowards (transform.position, transform.position + transform.forward, moveSpeed * Time.deltaTime);
 	}
 
 	void DestroyProjectile()
@@ -26,7 +26,7 @@ public class Projectile : MonoBehaviour {
 	void OnTriggerEnter(Collider col)
 	{
 		// they also hit each other when spawned
-		if (col.tag == "Enemy" || col.tag == "Projectile") {
+		if (col.tag == "Enemy" || col.tag == "Projectile" || col.tag == "Aura") {
 			// don't collide with the enemies
 			//return;
 		} else {

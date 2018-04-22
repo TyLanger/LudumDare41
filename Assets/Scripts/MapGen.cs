@@ -208,7 +208,7 @@ public class MapGen : MonoBehaviour {
 					// walls are spawned higher than the floor tiles (the 0.5f in y of the vector3)
 					tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 				} else {
-					tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
+					tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 				}
 				tileCopy.transform.parent = transform;
 			}
@@ -245,7 +245,7 @@ public class MapGen : MonoBehaviour {
 					if (x == 0 || x == (hallWidth-1) || y==(hallLength-1) ) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f-(y*0.5f), -y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0-(y*0.5f), -y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0-(y*0.5f), -y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -269,7 +269,7 @@ public class MapGen : MonoBehaviour {
 						// make stairs going down. Each new column is lower than the last
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f-(x*0.5f), y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0-(x*0.5f), y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0-(x*0.5f), y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -290,7 +290,7 @@ public class MapGen : MonoBehaviour {
 					if (x == 0 || x == (hallWidth-1) || y==(hallLength-1)) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f-(y*0.5f), y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0-(y*0.5f), y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0-(y*0.5f), y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -328,7 +328,7 @@ public class MapGen : MonoBehaviour {
 					if (y == x) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y) * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -352,7 +352,7 @@ public class MapGen : MonoBehaviour {
 					if (x == 0 || x == (hallWidth-1) ) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -380,7 +380,7 @@ public class MapGen : MonoBehaviour {
 					if (x == 0 || x == (hallWidth-1) ) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -412,7 +412,7 @@ public class MapGen : MonoBehaviour {
 					if ((x==0) || (y==roomLength-1) || (y==0 && x > hallWidth-1) || (x==roomWidth-1 && y < (roomLength-hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -452,7 +452,7 @@ public class MapGen : MonoBehaviour {
 					if ((x==0) || (y==roomWidth-1) || (x==roomLength-1) || (x==hallWidth && y < roomWidth- hallWidth)) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -511,7 +511,7 @@ public class MapGen : MonoBehaviour {
 					if (y == x) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, -y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, -y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -543,7 +543,7 @@ public class MapGen : MonoBehaviour {
 					if (x == 0 || x == (hallWidth - 1)) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, -y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, -y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -572,7 +572,7 @@ public class MapGen : MonoBehaviour {
 					if (x == 0 || x == (hallWidth-1) ) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0.5f, -y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0, -y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -604,7 +604,7 @@ public class MapGen : MonoBehaviour {
 					if ((x==0) || (y==roomLength-1) || (y==0 && x > hallWidth-1) || (x==roomWidth-1 && y < (roomLength-hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, -y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x* tileSpacing, 0, -y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -644,7 +644,7 @@ public class MapGen : MonoBehaviour {
 					if ((x==0) || (y==0) || (x==roomLength-1) || (x==hallWidth && y > hallWidth)) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}
@@ -704,7 +704,7 @@ public class MapGen : MonoBehaviour {
 					if (y == 0 || y == (hallWidth - 1)) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 						/*
 						if ((x > hallLength * 0.3f) && x < hallLength*0.6f ){
 							// in the middle ~third of the hallway
@@ -748,7 +748,7 @@ public class MapGen : MonoBehaviour {
 						// the 0.5 makes the blocks spawn half as far apart to make the hallway less steep
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y-(1*x) * 0.5f) * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y-(1*x) * 0.5f) * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y-(1*x) * 0.5f) * tileSpacing), transform.rotation);
 
 					}
 					tileCopy.transform.parent = transform;
@@ -778,7 +778,7 @@ public class MapGen : MonoBehaviour {
 					if (y == 0 || y == (hallWidth - 1)) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y+(1*x) * 0.5f) * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y+(1*x) * 0.5f) * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y+(1*x) * 0.5f) * tileSpacing), transform.rotation);
 
 					}
 					tileCopy.transform.parent = transform;
@@ -809,7 +809,7 @@ public class MapGen : MonoBehaviour {
 					if (y == 0 || y == (roomWidth - 1) || (x == 0 && y >= hallWidth) || (x == (roomLength - 1) && y <= (roomWidth - hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y) * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
 
 					}
 					tileCopy.transform.parent = transform;
@@ -854,7 +854,7 @@ public class MapGen : MonoBehaviour {
 					if (y == 0 || y == (roomWidth - 1) || (x == (roomLength - 1) && y >= hallWidth) || (x == 0 && y <= (roomWidth - hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, (y) * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
 
 					}
 					tileCopy.transform.parent = transform;
@@ -908,7 +908,7 @@ public class MapGen : MonoBehaviour {
 					if (x==(roomLength-1) || y==(roomWidth-1) || (x==0 && y<(roomWidth-hallWidth)) || (y==0 && x<(roomLength-hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 
 					}
 					tileCopy.transform.parent = transform;
@@ -963,7 +963,7 @@ public class MapGen : MonoBehaviour {
 					if (x == (roomLength - 1) || y == 0 || (x==0 && y > hallWidth-1) || (y == roomWidth-1 && x < (roomLength-hallWidth))) {
 						tileCopy = Instantiate (wallPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0.5f, y * tileSpacing), transform.rotation);
 					} else {
-						tileCopy = Instantiate (floorPieces [0], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
+						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
 					tileCopy.transform.parent = transform;
 				}

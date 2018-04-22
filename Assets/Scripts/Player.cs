@@ -22,7 +22,7 @@ public class Player : MonoBehaviour {
 	public float maxTurning = 2;
 
 	public AnimationCurve turnCurve;
-	CameraFollow cameraFollow;
+	public CameraFollow cameraFollow;
 	//Rigidbody rbody;
 
 	//public GameObject frontLeftTire;
@@ -51,7 +51,7 @@ public class Player : MonoBehaviour {
 	void Start () {
 		//rbody = GetComponent<Rigidbody> ();
 		oldForward = transform.forward;
-		cameraFollow = FindObjectOfType<CameraFollow> ();
+		//cameraFollow = FindObjectOfType<CameraFollow> ();
 
 	}
 	
@@ -68,6 +68,10 @@ public class Player : MonoBehaviour {
 			}
 		}
 
+		if (transform.position.y < -1) {
+			// player fell off map
+			playerControl = false;
+		}
 
 		if (Input.GetButton ("Jump")) {
 			// add some trauma to camera

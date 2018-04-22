@@ -22,6 +22,9 @@ public class Mage : MonoBehaviour {
 	Vector3 ForceDirection;
 	float moveSpeed = 3;
 
+	bool awake = false;
+
+
 	// Use this for initialization
 	void Start () {
 		ForceDirection = Vector3.up;
@@ -30,40 +33,43 @@ public class Mage : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (alive) {
-			if (Time.time > timeOfNextAttack) {
-				timeOfNextAttack = Time.time + timeBetweenAttacks;
+		if (awake) {
+			if (alive) {
+				if (Time.time > timeOfNextAttack) {
+					timeOfNextAttack = Time.time + timeBetweenAttacks;
 
-				switch (attackType) {
+					switch (attackType) {
 
-				case AttackType.PulseRing:
+					case AttackType.PulseRing:
 				// fire right
-					FireProjectile (0);
-					FireProjectile (1);
-					FireProjectile (2);
-					FireProjectile (3);
-					FireProjectile (4);
-					FireProjectile (5);
-					FireProjectile (6);
-					FireProjectile (7);
+						FireProjectile (0);
+						FireProjectile (1);
+						FireProjectile (2);
+						FireProjectile (3);
+						FireProjectile (4);
+						FireProjectile (5);
+						FireProjectile (6);
+						FireProjectile (7);
 
-					break;
+						break;
 
-				case AttackType.Spiral:
-					FireProjectile (current);
-					current = (current + 1) % 8;
-					break;
+					case AttackType.Spiral:
+						FireProjectile (current);
+						current = (current + 1) % 8;
+						break;
+					}
+
 				}
-
+			} else {
+				transform.position = Vector3.MoveTowards (transform.position, transform.position + ForceDirection, moveSpeed * Time.deltaTime);
+				ForceDirection += Vector3.up * gravity;
 			}
-		} else {
-			transform.position = Vector3.MoveTowards (transform.position, transform.position + ForceDirection, moveSpeed * Time.deltaTime);
-			ForceDirection += Vector3.up* gravity;
 		}
 	}
 
 	void FireProjectile(int direction)
 	{
+		
 		switch (direction) {
 		case 0:
 			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 0, 0)));
@@ -84,6 +90,7 @@ public class Mage : MonoBehaviour {
 
 		case 5:
 			Instantiate (projectile, transform.position, Quaternion.Euler (new Vector3 (0, 225, 0)));
+
 			break;
 
 		case 6:
@@ -102,6 +109,11 @@ public class Mage : MonoBehaviour {
 		// despawn yourself
 		// called after it has been crashed into
 		Destroy(this.gameObject);
+	}
+
+	public void WakeUp(bool wake)
+	{
+		awake = wake;
 	}
 
 	public void CrashInto(Vector3 forceDirection, float crashSpeed)
