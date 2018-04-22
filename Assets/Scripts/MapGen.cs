@@ -128,7 +128,7 @@ public class MapGen : MonoBehaviour {
 		army.position = center;
 		GameObject enemyCopy;
 		// randomly choose something to spawn
-		int r = Random.Range(0, 2);
+		int r = Random.Range(0, 3);
 		switch(r)
 		{
 		case 0:
@@ -137,7 +137,8 @@ public class MapGen : MonoBehaviour {
 				for (int y = 0; y < 4; y++) {
 					// 16 skeletons
 					// don't use tileScaling on the skeletons, they are better bunched up
-					enemyCopy = Instantiate (enemies [0], army.position + new Vector3 ((x - 1.5f), 1.3f, (y - 1.5f)), army.rotation);
+					// multiply by 1.8 to space them out a bit
+					enemyCopy = Instantiate (enemies [0], army.position + new Vector3 ((x - 1.5f)* 1.8f, 1.3f, (y - 1.5f)* 1.8f) , army.rotation);
 					enemyCopy.GetComponent<Mage> ().SetItemPool (itemPool);
 					enemyCopy.transform.parent = army;
 				}

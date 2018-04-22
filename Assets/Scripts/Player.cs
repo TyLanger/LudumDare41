@@ -47,12 +47,16 @@ public class Player : MonoBehaviour {
 	float brakeInput = 0;
 	float horInput = 0;
 
+	AudioSource audioSource;
+	public AudioClip[] clips;
+	float timeClipStarted = 0;
+
 	// Use this for initialization
 	void Start () {
 		//rbody = GetComponent<Rigidbody> ();
 		oldForward = transform.forward;
 		//cameraFollow = FindObjectOfType<CameraFollow> ();
-
+		audioSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -187,6 +191,15 @@ public class Player : MonoBehaviour {
 
 		if (col.tag == "Enemy") {
 			// kill enemy
+			if (!audioSource.isPlaying) {
+				audioSource.clip = clips [Random.Range (0, clips.Length)];
+				audioSource.Play ();
+				timeClipStarted = Time.time;
+			} else if((Time.time - timeClipStarted) > 0.1f){
+				audioSource.clip = clips [Random.Range (0, clips.Length)];
+				audioSource.Play ();
+				timeClipStarted = Time.time;
+			}
 			col.gameObject.GetComponent<Mage>().CrashInto((col.transform.position - transform.position).normalized, currentMoveSpeed);
 			// add screen shake
 			cameraFollow.AddScreenShake();
