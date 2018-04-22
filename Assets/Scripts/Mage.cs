@@ -43,14 +43,18 @@ public class Mage : MonoBehaviour {
 
 					case AttackType.PulseRing:
 				// fire right
-						FireProjectile (0);
-						FireProjectile (1);
-						FireProjectile (2);
-						FireProjectile (3);
-						FireProjectile (4);
-						FireProjectile (5);
-						FireProjectile (6);
-						FireProjectile (7);
+						if (current == 0) {
+							FireProjectile (0);
+							FireProjectile (2);
+							FireProjectile (4);
+							FireProjectile (6);
+						} else {
+							FireProjectile (1);
+							FireProjectile (3);
+							FireProjectile (5);
+							FireProjectile (7);
+						}
+						current = (current + 1) % 2;
 
 						break;
 

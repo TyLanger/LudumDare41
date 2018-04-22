@@ -169,12 +169,14 @@ public class MapGen : MonoBehaviour {
 			// pulse wizards
 			// They're meh. Harder to dodge pulses
 			// pulses cause frame drop
-			/*
+
 			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (2 * tileSpacing, 1.3f, 3.5f * tileSpacing), army.rotation);
+			enemyCopy.GetComponent<Mage> ().SetItemPool (itemPool);
 			enemyCopy.transform.parent = army;
 			enemyCopy = Instantiate (enemies [2], army.position + new Vector3 (-2 * tileSpacing, 1.3f, -3.5f * tileSpacing), army.rotation);
+			enemyCopy.GetComponent<Mage> ().SetItemPool (itemPool);
 			enemyCopy.transform.parent = army;
-			*/
+
 			break;
 		case 3:
 			// this doesn't exist yet

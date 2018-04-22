@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ItemPool : MonoBehaviour {
 
-	int numToSpawn = 25;
+	int numToSpawn = 35;
 	public int totalSpawned = 0;
 
 	public GameObject projectile;
@@ -12,7 +12,7 @@ public class ItemPool : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		itemPool = new Queue<GameObject> (60);
+		itemPool = new Queue<GameObject> (75);
 		GameObject copy;
 		for (int i = 0; i < numToSpawn; i++) {
 			copy = Instantiate (projectile, transform.position, transform.rotation);
