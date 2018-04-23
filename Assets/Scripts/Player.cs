@@ -77,10 +77,11 @@ public class Player : MonoBehaviour {
 			playerControl = false;
 		}
 
+		/*
 		if (Input.GetButton ("Jump")) {
 			// add some trauma to camera
 			cameraFollow.AddScreenShake();
-		}
+		}*/
 
 		// turning
 		if (horInput == 0) {
@@ -172,6 +173,7 @@ public class Player : MonoBehaviour {
 		// lose hp?
 		// time penalty?
 		penaltyTime += hitPenalty;
+		cameraFollow.AddScreenShake(0.5f);
 	}
 
 
@@ -202,7 +204,7 @@ public class Player : MonoBehaviour {
 			}
 			col.gameObject.GetComponent<Mage>().CrashInto((col.transform.position - transform.position).normalized, currentMoveSpeed);
 			// add screen shake
-			cameraFollow.AddScreenShake();
+			cameraFollow.AddScreenShake(0.3f);
 			enemiesCrushed++;
 		}
 	}

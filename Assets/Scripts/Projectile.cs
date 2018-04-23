@@ -21,6 +21,7 @@ public class Projectile : MonoBehaviour {
 	void Update () {
 		if (active) {
 			transform.position = Vector3.MoveTowards (transform.position, transform.position + transform.forward, moveSpeed * Time.deltaTime);
+			transform.RotateAround (transform.position, transform.forward, 1);
 		}
 	}
 

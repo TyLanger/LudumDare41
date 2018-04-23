@@ -38,9 +38,9 @@ public class CameraFollow : MonoBehaviour {
 
 	}
 
-	public void AddScreenShake()
+	public void AddScreenShake(float amount)
 	{
-		trauma += 0.3f;
+		trauma += amount;
 		if (trauma > 1) {
 			trauma = 1;
 		}
