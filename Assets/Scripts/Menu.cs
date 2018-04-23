@@ -25,6 +25,7 @@ public class Menu : MonoBehaviour {
 	public Text timer;
 	float timeStart = 0;
 	bool timerRunning = false;
+	public Text seedText;
 
 	int seed = 0;
 	public MapGen map;
@@ -48,6 +49,7 @@ public class Menu : MonoBehaviour {
 		map.RandomizeSeed ();
 		seed = map.GetSeed ();
 		seedInput.text = seed.ToString();
+		seedText.text = seed.ToString ();
 	}
 
 	public void StartGame()
@@ -55,6 +57,7 @@ public class Menu : MonoBehaviour {
 		if (seedInput.text.Length > 0) {
 			seed = int.Parse( seedInput.text);
 			map.UseSeed (seed);
+			seedText.text = seed.ToString ();
 		}
 		map.BuildMap ();
 	}
