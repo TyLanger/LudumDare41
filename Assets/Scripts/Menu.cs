@@ -28,6 +28,12 @@ public class Menu : MonoBehaviour {
 	float timeStart = 0;
 	bool timerRunning = false;
 	public Text seedText;
+	/*
+	public Text leftMovement;
+	public Text rightMovement;
+	public Text gasPedal;
+	public Text brakePedal;
+	*/
 
 	int seed = 0;
 	public MapGen map;
@@ -35,6 +41,20 @@ public class Menu : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		DontDestroyOnLoad (this.gameObject);
+
+		// check if controller is plugged in
+		/*
+		 * This can't consistently figure out if a controller is plugged in
+		var controllers = Input.GetJoystickNames ();
+		Debug.Log("Start");
+		if (controllers.Length > 0) {
+			Debug.Log ("Controller plugged in");
+			leftMovement.text = "";
+			rightMovement.text = "Left\nStick";
+			gasPedal.text = "RT"; //"Right\nTrigger";
+			brakePedal.text = "LT"; //"Left\nTrigger";
+		}
+		*/
 	}
 	
 	// Update is called once per frame

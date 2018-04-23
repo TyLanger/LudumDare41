@@ -115,7 +115,7 @@ public class MapGen : MonoBehaviour {
 			currentPiece = BuildPiece(currentPiece.Exit);
 		}
 		BuildEndPiece (currentPiece.Exit);
-		Debug.Log (debugString);
+		//Debug.Log (debugString);
 		//transform.localScale *= 2;
 		// spawn car
 

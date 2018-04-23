@@ -119,7 +119,8 @@ public class Player : MonoBehaviour {
 		/*
 		if (Input.GetButton ("Jump")) {
 			// add some trauma to camera
-			cameraFollow.AddScreenShake();
+			//cameraFollow.AddScreenShake();
+			Debug.Break();
 		}*/
 
 		// turning
