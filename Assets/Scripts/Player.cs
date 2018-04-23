@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
 	float deceleration = 0.05f;
 	float turnSpeed = 0.2f;
 
+	public Transform lookPoint;
 	//float maxTurnAngle = 45;
 	//float drag = 0.1f;
 
@@ -40,12 +41,15 @@ public class Player : MonoBehaviour {
 	float endTime = 0;
 	float penaltyTime = 0;
 	float hitPenalty = 1;
+	int timesHit = 0;
 	int enemiesCrushed = 0;
 
 	bool playerControl = true;
 	float accelInput = 0;
 	float brakeInput = 0;
 	float horInput = 0;
+
+	public Menu menu;
 
 	AudioSource audioSource;
 	public AudioClip[] clips;
@@ -58,6 +62,15 @@ public class Player : MonoBehaviour {
 		//cameraFollow = FindObjectOfType<CameraFollow> ();
 		audioSource = GetComponent<AudioSource>();
 	}
+
+	public void InitPlayer(Menu _menu, CameraFollow cam)
+	{
+		// mixing style....
+		menu = _menu;
+		cameraFollow = cam;
+
+		cameraFollow.player = lookPoint;
+	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -65,12 +78,14 @@ public class Player : MonoBehaviour {
 			accelInput = Input.GetAxisRaw ("Acceleration");
 			brakeInput = Input.GetAxisRaw ("Brake");
 			horInput = Input.GetAxisRaw ("Horizontal");
-		} else {
+		} 
+		/* Reload the level at the end
+		else {
 			if (Input.GetButtonDown ("Fire1")) {
 				// reset
 				SceneManager.LoadSceneAsync(0);
 			}
-		}
+		}*/
 
 		if (transform.position.y < -1) {
 			// player fell off map
@@ -166,6 +181,7 @@ public class Player : MonoBehaviour {
 		Debug.Log ("But you crushed " + enemiesCrushed + " enemies!");
 		Debug.Log ("Total time: " + ((endTime-startTime)+penaltyTime-enemiesCrushed));
 
+		menu.RaceEnded ((endTime - startTime), timesHit, enemiesCrushed);
 	}
 
 	public void HitByProjectile()
@@ -174,6 +190,7 @@ public class Player : MonoBehaviour {
 		// time penalty?
 		penaltyTime += hitPenalty;
 		cameraFollow.AddScreenShake(0.5f);
+		timesHit++;
 	}
 
 

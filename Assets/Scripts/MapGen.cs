@@ -26,6 +26,8 @@ public class MapGen : MonoBehaviour {
 
 	public ItemPool itemPool;
 
+	GameObject storage;
+
 	int hallLength = 24;
 	int hallWidth = 12;
 
@@ -39,39 +41,70 @@ public class MapGen : MonoBehaviour {
 	//public TrackPiece[] LeftRight;
 	//Vector3 lastExit;
 
+	// stuff to initialize player car
+	public CameraFollow cameraFollow;
+	public Menu menu;
+	public GameObject player;
+	GameObject playerCopy;
+	public MageWakeUp mageWakeUp;
+
 	public bool useRandomSeed = false;
 	public int seed = 0;
 
 	// Use this for initialization
 	void Start () {
+		/*
 		if (useRandomSeed) {
 			seed = Random.Range (0, 1000);
 		}
 		Random.InitState (seed);
+		*/
 
-		lastTilePos = transform.position;
-		BuildMap ();
+		//BuildMap ();
 		//lastExit = transform.position;
 		//BuildTrackPieces ();
+
 	}
 
-	/*
-	void BuildTrackPieces()
+	public void RandomizeSeed()
 	{
-		int r = 0;
-		TrackPiece trackCopy = LeftRight [0];
-		for (int i = 0; i < numPiececs; i++) {
-			r = Random.Range (0, LeftRight.Length);
-			trackCopy = Instantiate (LeftRight [r]);
-			trackCopy.transform.position = lastExit + (trackCopy.transform.position - trackCopy.Entrance.transform.position);
-			lastExit = trackCopy.Exit.position;
-			trackCopy.transform.parent = transform;
+		seed = Random.Range (0, 1000);
+	}
+
+	public void UseSeed(int newSeed)
+	{
+		seed = newSeed;
+	}
+
+	public int GetSeed()
+	{
+		return seed;
+	}
+
+	void DestroyMap()
+	{
+		// storage holds all the objects on the map - walls, floor, enemies
+		// doesn't hold the player or projectiles
+		if (storage != null) {
+			Destroy (storage);
+		}
+		// Destroy player?
+		if (playerCopy != null) {
+			Destroy (playerCopy);
 		}
 	}
-	*/
 
-	void BuildMap()
+	public void BuildMap()
 	{
+		DestroyMap ();
+
+		storage = new GameObject ("Storage");
+		storage.transform.position = Vector3.zero;
+		storage.transform.parent = transform;
+
+		lastTilePos = transform.position;
+
+		Random.InitState (seed);
 		// build starting piece
 
 		//MapPiece currentPiece = new MapPiece(DoorDirection.Left, DoorDirection.Right);
@@ -84,6 +117,25 @@ public class MapGen : MonoBehaviour {
 		BuildEndPiece (currentPiece.Exit);
 		Debug.Log (debugString);
 		//transform.localScale *= 2;
+		// spawn car
+
+		// first time
+		playerCopy = Instantiate(player, transform.position + new Vector3(hallWidth * tileSpacing * 0.5f, 2, hallWidth * tileSpacing * 0.5f), Quaternion.Euler (0, 90, 0));
+		//player.transform.position = transform.position + new Vector3(hallWidth * tileSpacing * 0.5f, 1, hallWidth * tileSpacing * 0.5f);
+		//player.transform.rotation = Quaternion.Euler (0, 90, 0);
+		InitPlayer();
+	}
+
+	void PlacePlayerAtStart(Transform p)
+	{
+		p.transform.position = transform.position + new Vector3(hallWidth * tileSpacing * 0.5f, 1, hallWidth * tileSpacing * 0.5f);
+		p.transform.rotation = Quaternion.Euler (0, 90, 0);
+	}
+
+	void InitPlayer()
+	{
+		mageWakeUp.player = playerCopy.transform;
+		playerCopy.GetComponent<Player> ().InitPlayer (menu, cameraFollow);
 	}
 
 	MapPiece BuildPiece(DoorDirection entrance)
@@ -207,7 +259,7 @@ public class MapGen : MonoBehaviour {
 			army.rotation = Quaternion.FromToRotation (Vector3.forward, (army.position - new Vector3(topLeft.x + topRight.x + 0.1f, 0, topLeft.z + topLeft.z)*0.5f));
 			break;
 		}
-		army.parent = transform;
+		army.parent = storage.transform;
 	}
 
 	MapPiece BuildStartPiece()
@@ -224,7 +276,7 @@ public class MapGen : MonoBehaviour {
 				} else {
 					tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 				}
-				tileCopy.transform.parent = transform;
+				tileCopy.transform.parent = storage.transform;
 			}
 		}
 
@@ -234,8 +286,8 @@ public class MapGen : MonoBehaviour {
 		// set the lastTilePos to the bottom right tile
 		lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
 
-		var start = Instantiate (startLine, lastTilePos + new Vector3 (0, -0.15f, ((hallWidth -1)* 0.5f) * tileSpacing), Quaternion.AngleAxis(90, Vector3.forward));
-		start.transform.parent = transform;
+		var start = Instantiate (startLine, lastTilePos + new Vector3 (0, 0.25f, ((hallWidth -1)* 0.5f) * tileSpacing), Quaternion.AngleAxis(90, Vector3.forward));
+		start.transform.parent = storage.transform;
 
 		return thisPiece;
 	}
@@ -252,9 +304,10 @@ public class MapGen : MonoBehaviour {
 
 			// hallway straight down
 			lastTilePos = lastTilePos + new Vector3 (0, 0, -tileSpacing);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth - 1) * 0.5f) * tileSpacing, -0.15f, 0), Quaternion.AngleAxis (-90, Vector3.up));
-			end.transform.RotateAround (end.transform.position, Vector3.forward, 90);
-			end.transform.parent = transform;
+			// the 0.25f and 0.2f are to hide the line in the ground
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth - 1) * 0.5f) * tileSpacing, 0.25f, 0.2f), Quaternion.AngleAxis (-90, Vector3.up));
+			end.transform.RotateAround (end.transform.position, Vector3.right, 90);
+			end.transform.parent = storage.transform;
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < hallLength; y++) {
 					if (x == 0 || x == (hallWidth-1) || y==(hallLength-1) ) {
@@ -262,7 +315,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0-(y*0.5f), -y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			// don't need for the end tile
@@ -275,8 +328,9 @@ public class MapGen : MonoBehaviour {
 
 			// entrance is to the left
 			lastTilePos = lastTilePos + new Vector3 (tileSpacing, 0, 0);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (0, -0.15f, ((hallWidth -1)* 0.5f) * tileSpacing), Quaternion.AngleAxis (-90, Vector3.forward));
-			end.transform.parent = transform;
+			// the 0.25f and 0.2f are to hide the line in the ground
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (0, 0.25f, ((hallWidth -1)* 0.5f) * tileSpacing), Quaternion.AngleAxis (-90, Vector3.forward));
+			end.transform.parent = storage.transform;
 			for (int x = 0; x < hallLength; x++) {
 				for (int y = 0; y < hallWidth; y++) {
 					if (y == 0 || y == (hallWidth - 1) || x==(hallLength-1)) {
@@ -286,7 +340,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0-(x*0.5f), y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 
@@ -298,9 +352,10 @@ public class MapGen : MonoBehaviour {
 
 			// hallway straight up
 			lastTilePos = lastTilePos + new Vector3 (0, 0, tileSpacing);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, -0.15f, 0), Quaternion.AngleAxis(90, Vector3.up));
-			end.transform.RotateAround (end.transform.position, Vector3.forward, 90);
-			end.transform.parent = transform;
+			// the 0.25f and 0.2f are to hide the line in the ground
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, 0.25f, -0.2f), Quaternion.AngleAxis(90, Vector3.up));
+			end.transform.RotateAround (end.transform.position, Vector3.right, 90);
+			end.transform.parent = storage.transform;
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < hallLength; y++) {
 					if (x == 0 || x == (hallWidth-1) || y==(hallLength-1)) {
@@ -308,7 +363,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0-(y*0.5f), y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			break;
@@ -346,7 +401,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces [Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
@@ -370,7 +425,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth - 1) * tileSpacing, -0.5f, 0);
@@ -398,7 +453,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth - 1) * tileSpacing, -0.5f, 0);
@@ -430,7 +485,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth-1));
@@ -446,8 +501,8 @@ public class MapGen : MonoBehaviour {
 			roomCorners [7] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing);
 			roomCorners [8] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing, 0, -(roomWidth-1)*tileSpacing);
 
-			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Top);
-			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Bottom);
+			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Bottom);
 			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
 			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
 
@@ -470,7 +525,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth-1) * tileSpacing, -0.5f, -(roomWidth-1)*tileSpacing);
@@ -485,10 +540,10 @@ public class MapGen : MonoBehaviour {
 			roomCorners [7] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing);
 			roomCorners [8] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing, 0, -(roomWidth-1)*tileSpacing);
 
-			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Top);
-			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Bottom);
+			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Bottom);
 			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
-			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
+			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Top);
 
 			break;
 		}
@@ -529,7 +584,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, 0);
@@ -561,7 +616,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth - 1) * tileSpacing, -0.5f, 0);
@@ -590,7 +645,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 ((x+(1*y)*0.5f) * tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth - 1) * tileSpacing, -0.5f, 0);
@@ -622,7 +677,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, -y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, 0);
@@ -662,7 +717,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x* tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth-1) * tileSpacing, -0.5f, 0);
@@ -679,7 +734,7 @@ public class MapGen : MonoBehaviour {
 
 			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Top);
 			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
-			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
+			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Bottom);
 			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
 
 			break;
@@ -732,7 +787,7 @@ public class MapGen : MonoBehaviour {
 						}
 						*/
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 
@@ -767,7 +822,7 @@ public class MapGen : MonoBehaviour {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y-(1*x) * 0.5f) * tileSpacing), transform.rotation);
 
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
@@ -797,7 +852,7 @@ public class MapGen : MonoBehaviour {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y+(1*x) * 0.5f) * tileSpacing), transform.rotation);
 
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
@@ -828,7 +883,7 @@ public class MapGen : MonoBehaviour {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
 
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			// lastTilePos is now in the top right corner
@@ -873,7 +928,7 @@ public class MapGen : MonoBehaviour {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, (y) * tileSpacing), transform.rotation);
 
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(roomWidth - 1) * tileSpacing);
@@ -927,7 +982,7 @@ public class MapGen : MonoBehaviour {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 
@@ -944,7 +999,7 @@ public class MapGen : MonoBehaviour {
 			roomCorners [7] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing);
 			roomCorners [8] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing, 0, -(roomWidth-1)*tileSpacing);
 
-			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Top);
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Left);
 			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
 			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
 			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
@@ -981,7 +1036,7 @@ public class MapGen : MonoBehaviour {
 					} else {
 						tileCopy = Instantiate (floorPieces[Random.Range(0, floorPieces.Length)], lastTilePos + new Vector3 (x * tileSpacing, 0, y * tileSpacing), transform.rotation);
 					}
-					tileCopy.transform.parent = transform;
+					tileCopy.transform.parent = storage.transform;
 				}
 			}
 			lastTilePos = tileCopy.transform.position + new Vector3 (-(hallWidth-1)*tileSpacing, -0.5f, 0);
@@ -996,8 +1051,8 @@ public class MapGen : MonoBehaviour {
 			roomCorners [7] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing*0.5f, 0, -(roomWidth-1)*tileSpacing);
 			roomCorners [8] = roomCorners [0] + new Vector3 ((roomLength-1)*tileSpacing, 0, -(roomWidth-1)*tileSpacing);
 
-			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Top);
-			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Top);
+			SpawnEnemies (roomCorners [0], roomCorners [1], roomCorners [3], roomCorners [4], DoorDirection.Bottom);
+			SpawnEnemies (roomCorners [3], roomCorners [4], roomCorners [6], roomCorners [7], DoorDirection.Left);
 			SpawnEnemies (roomCorners [1], roomCorners [2], roomCorners [4], roomCorners [5], DoorDirection.Left);
 			SpawnEnemies (roomCorners [4], roomCorners [5], roomCorners [7], roomCorners [8], DoorDirection.Left);
 

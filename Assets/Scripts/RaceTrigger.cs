@@ -28,7 +28,9 @@ public class RaceTrigger : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col)
 	{
+		
 		if (col.tag == "Player") {
+			Debug.Log ("Hit a trigger "+startLine);
 			if (!startLine) {
 				col.GetComponent<Player> ().EndRace ();
 			}
