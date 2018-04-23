@@ -30,7 +30,7 @@ public class RaceTrigger : MonoBehaviour {
 	{
 		
 		if (col.tag == "Player") {
-			Debug.Log ("Hit a trigger "+startLine);
+			//Debug.Log ("Hit a trigger "+startLine);
 			if (!startLine) {
 				col.GetComponent<Player> ().EndRace ();
 			}
