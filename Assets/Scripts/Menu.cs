@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Menu : MonoBehaviour {
 
+	public Image Title;
+
 	// shown at start
 	public Button StartTutorialButton;
 	public Button randomizeSeed;
@@ -69,6 +71,7 @@ public class Menu : MonoBehaviour {
 
 	public void HideMainMenu()
 	{
+		Title.gameObject.SetActive (false);
 		StartTutorialButton.gameObject.SetActive (false);
 		randomizeSeed.gameObject.SetActive (false);
 		seedInput.gameObject.SetActive (false);
