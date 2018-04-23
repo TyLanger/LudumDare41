@@ -234,7 +234,7 @@ public class MapGen : MonoBehaviour {
 		// set the lastTilePos to the bottom right tile
 		lastTilePos = tileCopy.transform.position + new Vector3 (0, -0.5f, -(hallWidth - 1) * tileSpacing);
 
-		var start = Instantiate (startLine, lastTilePos + new Vector3 (0, 0, ((hallWidth -1)* 0.5f) * tileSpacing), transform.rotation);
+		var start = Instantiate (startLine, lastTilePos + new Vector3 (0, -0.15f, ((hallWidth -1)* 0.5f) * tileSpacing), Quaternion.AngleAxis(90, Vector3.forward));
 		start.transform.parent = transform;
 
 		return thisPiece;
@@ -252,7 +252,8 @@ public class MapGen : MonoBehaviour {
 
 			// hallway straight down
 			lastTilePos = lastTilePos + new Vector3 (0, 0, -tileSpacing);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, 0, 0), Quaternion.AngleAxis(-90, Vector3.up));
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth - 1) * 0.5f) * tileSpacing, -0.15f, 0), Quaternion.AngleAxis (-90, Vector3.up));
+			end.transform.RotateAround (end.transform.position, Vector3.forward, 90);
 			end.transform.parent = transform;
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < hallLength; y++) {
@@ -274,7 +275,7 @@ public class MapGen : MonoBehaviour {
 
 			// entrance is to the left
 			lastTilePos = lastTilePos + new Vector3 (tileSpacing, 0, 0);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (0, 0, ((hallWidth -1)* 0.5f) * tileSpacing), transform.rotation);
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (0, -0.15f, ((hallWidth -1)* 0.5f) * tileSpacing), Quaternion.AngleAxis (-90, Vector3.forward));
 			end.transform.parent = transform;
 			for (int x = 0; x < hallLength; x++) {
 				for (int y = 0; y < hallWidth; y++) {
@@ -297,7 +298,8 @@ public class MapGen : MonoBehaviour {
 
 			// hallway straight up
 			lastTilePos = lastTilePos + new Vector3 (0, 0, tileSpacing);
-			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, 0, 0), Quaternion.AngleAxis(90, Vector3.up));
+			end = Instantiate (finishLine, lastTilePos + new Vector3 (((hallWidth-1)*0.5f) * tileSpacing, -0.15f, 0), Quaternion.AngleAxis(90, Vector3.up));
+			end.transform.RotateAround (end.transform.position, Vector3.forward, 90);
 			end.transform.parent = transform;
 			for (int x = 0; x < hallWidth; x++) {
 				for (int y = 0; y < hallLength; y++) {
