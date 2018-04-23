@@ -99,6 +99,8 @@ public class Menu : MonoBehaviour {
 
 	public void RaceEnded(float time, int timesHit, int enemiesCrushed)
 	{
+		// don't need to pass this info anymore
+
 		timerRunning = false;
 		// display info
 		// enable buttons

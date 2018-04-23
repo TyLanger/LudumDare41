@@ -87,9 +87,10 @@ public class Player : MonoBehaviour {
 			}
 		}*/
 
-		if (transform.position.y < -1) {
+		if (transform.position.y < -1 && playerControl) {
 			// player fell off map
 			playerControl = false;
+			OutsideMap ();
 		}
 
 		/*
@@ -165,6 +166,11 @@ public class Player : MonoBehaviour {
 		startTime = Time.time;
 		// start a coroutine to have a timer counting
 		menu.RaceStarted();
+	}
+
+	void OutsideMap()
+	{
+		menu.RaceEnded (0, 0, 0);
 	}
 
 	public void EndRace()
