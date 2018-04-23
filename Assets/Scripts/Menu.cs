@@ -110,7 +110,7 @@ public class Menu : MonoBehaviour {
 		timerRunning = false;
 		// display info
 		// enable buttons
-		StartTutorialButton.gameObject.SetActive (true);
+		//StartTutorialButton.gameObject.SetActive (true);
 		randomizeSeed.gameObject.SetActive (true);
 		seedInput.gameObject.SetActive (true);
 		StartGameButton.gameObject.SetActive (true);

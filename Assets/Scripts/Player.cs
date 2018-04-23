@@ -55,12 +55,35 @@ public class Player : MonoBehaviour {
 	public AudioClip[] clips;
 	float timeClipStarted = 0;
 
+	public AudioSource revAudio;
+	AudioSource lowRevAudio;
+	public AudioClip accelClip;
+	public AudioClip lowAccelClip;
+	public float minVolume = 0.4f;
+	public float maxVolume = 0.9f;
+	public float minPitch = 0.75f;
+	public float maxPitch = 1f;
+
+	int gear = 0;
+	float timeBetweenGears = 1;
+	float timeOfNextShift = 0;
+
 	// Use this for initialization
 	void Start () {
 		//rbody = GetComponent<Rigidbody> ();
 		oldForward = transform.forward;
 		//cameraFollow = FindObjectOfType<CameraFollow> ();
 		audioSource = GetComponent<AudioSource>();
+		/*
+		lowRevAudio = gameObject.AddComponent<AudioSource> ();
+		lowRevAudio.clip = lowAccelClip;
+		lowRevAudio.loop = true;
+		lowRevAudio.volume = 0;
+		lowRevAudio.pitch = 1.2f;
+		if (!lowRevAudio.isPlaying) {
+			lowRevAudio.Play ();
+		}
+		*/
 	}
 
 	public void InitPlayer(Menu _menu, CameraFollow cam)
@@ -137,6 +160,49 @@ public class Player : MonoBehaviour {
 		currentMoveSpeed -= brakeInput * deceleration * (0.5f*maxMoveSpeed - Mathf.Abs(currentMoveSpeed));
 
 		currentMoveSpeed = Mathf.Clamp (currentMoveSpeed, -maxMoveSpeed*0.5f, maxMoveSpeed);
+		
+		// Accel sound
+		if (currentMoveSpeed > 0 && accelInput > 0) {
+			// moving forward and pressing the gas
+			//audioSource.clip = accelClip;
+			// if speed is close to the max, stop updating volumes
+
+			if (!revAudio.isPlaying) {
+				revAudio.Play ();
+			} else {
+				//Debug.Log ("Change Volume");
+				if (currentMoveSpeed < (maxMoveSpeed - 1.0f)) {
+					revAudio.volume = Mathf.Lerp (minVolume, maxVolume, (currentMoveSpeed / maxMoveSpeed));
+					revAudio.pitch = Mathf.Lerp (minPitch, maxPitch, (currentMoveSpeed / maxMoveSpeed));
+				} else {
+					//revAudio.volume = Mathf.Lerp (maxVolume, 0, (1.0f - (maxMoveSpeed - currentMoveSpeed)));
+					//lowRevAudio.volume = Mathf.Lerp (0, 0.7f, (1.0f - (maxMoveSpeed - currentMoveSpeed)));
+					if (Time.time > timeOfNextShift) {
+						revAudio.Stop ();
+						// shift gears (in sound only)
+						//minPitch = Mathf.Clamp (minPitch - 0.05f, 0.3f, 1);
+						//maxPitch = Mathf.Clamp (maxPitch - 0.05f, 0.55f, 1);
+						//revAudio.pitch = minPitch;
+						gear++;
+						//Debug.Log ("Shift");
+						timeOfNextShift = Time.time + timeBetweenGears * gear;
+						revAudio.volume = minVolume;
+						revAudio.pitch = minPitch;
+						revAudio.Play ();
+					}
+					revAudio.volume = Mathf.Lerp (minVolume, maxVolume, ((timeBetweenGears*gear) - (timeOfNextShift - Time.time)) / (timeBetweenGears*gear));
+					revAudio.pitch = Mathf.Lerp (minPitch, maxPitch, ((timeBetweenGears*gear) - (timeOfNextShift - Time.time)) / (timeBetweenGears*gear));
+				}
+
+			}
+
+		} else {
+			if (revAudio.isPlaying) {
+				gear = 0;
+				timeOfNextShift = 0;
+				revAudio.Stop ();
+			}
+		}
 
 		// move forwards
 		//transform.position = Vector3.MoveTowards (transform.position, transform.position + oldForward, currentMoveSpeed * Time.fixedDeltaTime);
