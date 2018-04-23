@@ -164,6 +164,7 @@ public class Player : MonoBehaviour {
 		// the start line calls this when the player crosses the start line
 		startTime = Time.time;
 		// start a coroutine to have a timer counting
+		menu.RaceStarted();
 	}
 
 	public void EndRace()
@@ -191,6 +192,7 @@ public class Player : MonoBehaviour {
 		penaltyTime += hitPenalty;
 		cameraFollow.AddScreenShake(0.5f);
 		timesHit++;
+		menu.PlayerHit (timesHit);
 	}
 
 
@@ -223,6 +225,7 @@ public class Player : MonoBehaviour {
 			// add screen shake
 			cameraFollow.AddScreenShake(0.3f);
 			enemiesCrushed++;
+			menu.EnemyCrushed (enemiesCrushed);
 		}
 	}
 

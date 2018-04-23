@@ -20,6 +20,12 @@ public class Menu : MonoBehaviour {
 	public Button NewSeed;
 	public Button MainMenu;
 
+	public Text timesHit;
+	public Text enemiesCrushed;
+	public Text timer;
+	float timeStart = 0;
+	bool timerRunning = false;
+
 	int seed = 0;
 	public MapGen map;
 
@@ -30,7 +36,11 @@ public class Menu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (timerRunning) {
+
+			// one decimal place
+			timer.text = (Time.time - timeStart).ToString ("F1");
+		}
 	}
 
 	public void RandomizeSeed()
@@ -67,13 +77,29 @@ public class Menu : MonoBehaviour {
 
 	}
 
-	void RaceStarted()
+	public void PlayerHit(int times)
 	{
+		// this is the absolute number
+		// not an increment
+		timesHit.text = times.ToString ();
+	}
 
+	public void EnemyCrushed(int number)
+	{
+		// absolute number
+		// not an increment
+		enemiesCrushed.text = number.ToString ();
+	}
+
+	public void RaceStarted()
+	{
+		timerRunning = true;
+		timeStart = Time.time;
 	}
 
 	public void RaceEnded(float time, int timesHit, int enemiesCrushed)
 	{
+		timerRunning = false;
 		// display info
 		// enable buttons
 		StartTutorialButton.gameObject.SetActive (true);
