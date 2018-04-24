@@ -250,10 +250,12 @@ public class Player : MonoBehaviour {
 		// the end line calls this when the player touches the end line
 		endTime = Time.time;
 
+		/*
 		Debug.Log ("Time: " + (endTime - startTime));
 		Debug.Log ("Penalty time: " + penaltyTime);
 		Debug.Log ("But you crushed " + enemiesCrushed + " enemies!");
 		Debug.Log ("Total time: " + ((endTime-startTime)+penaltyTime-enemiesCrushed));
+		*/
 
 		menu.RaceEnded ((endTime - startTime), timesHit, enemiesCrushed);
 	}
